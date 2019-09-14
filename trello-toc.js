@@ -232,7 +232,7 @@
 
     createButtonAutoAttach();
     createButtonTableOfContents();
-    oversizedCardSize();
+    // oversizedCardSize();
     alwaysExpandedTextInCards();
     bindOverlayEvents();
 })();
