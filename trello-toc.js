@@ -3,7 +3,7 @@
 // @version      1.3.3
 // @description  Added table of contents for trello card. Some little fixes for trello card.
 // @author       Andrew Solomonov
-// @match        https://trello.com/**/*
+// @match        https://trello.com/*
 // @grant        none
 // ==/UserScript==
 
