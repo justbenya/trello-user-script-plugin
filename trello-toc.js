@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Trello TOC
-// @version      1.3.3
+// @version      1.3.4
 // @description  Added table of contents for trello card. Some little fixes for trello card.
 // @author       Andrew Solomonov
 // @match        https://trello.com/*
