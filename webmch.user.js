@@ -5,6 +5,7 @@
 // @author       Andrew Solomonov
 // @match        https://webmch.ru/*
 // @grant        none
+// @downloadURL  https://github.com/justbenya/trello-user-script-plugin/blob/master/webmch.user.js
 // @run-at       document-end
 // ==/UserScript==
 
