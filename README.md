@@ -31,6 +31,6 @@
 ```
 - Добавить в `// ==UserScript==` строку:
 ```
-// @require file:///YOU_DIRECTORY/trello-toc.js
+// @require file:///YOU_DIRECTORY/SCRIPT_NAME.user.js
 ```
 - Теперь меняя код в IDE, он автоматически сохраняется в плагине
