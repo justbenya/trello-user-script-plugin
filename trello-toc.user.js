@@ -195,7 +195,7 @@
 
     function oversizedCardSize() {
         let style = document.createElement('style');
-        style.innerText = '.window { width: 1155px; } .window-main-col { width: 910px; }';
+        style.innerText = '.window { width: 1155px; } .window-main-col { width: 882px; color: #000;}';
         document.querySelector('body').appendChild(style);
     }
 
@@ -232,7 +232,7 @@
 
     createButtonAutoAttach();
     createButtonTableOfContents();
-    // oversizedCardSize();
+    oversizedCardSize();
     alwaysExpandedTextInCards();
     bindOverlayEvents();
 })();
