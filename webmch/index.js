@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         Webmch-video
-// @version      0.0.1
+// @version      0.0.2
 // @description  Added buttons to use mouse with video.
 // @author       Andrew Solomonov
 // @match        https://webmch.ru/*
 // @grant        none
+// @run-at       document-end
 // ==/UserScript==
 
 ;(function () {
@@ -153,47 +154,58 @@
         .reduce-player.modal-open {
             overflow: unset;
         }
-     
     `;
 
     addGlobalStyle(style);
 
-    const player = document.querySelector('.modal-document');
-    const buttons = `
+    let player;
+    let timerId = setInterval(() => {
+        if (!player) {
+            init();
+        } else {
+            clearInterval(timerId)
+        }
+    }, 1000);
+
+    function init() {
+        player = document.querySelector('.modal-document');
+
+        const buttons = `
             <button title="Закрыть видео" class="b-button b-button--exit js-btn-exit"></button>  
             <button title="Предыдущее видео" class="b-button b-button--prev-video js-btn-prev"></button>  
             <button title="Следующее видео" class="b-button b-button--next-video js-btn-next"></button>  
             <button title="Мини-проигрыватель" class="b-button b-button--reduce-player js-btn-reduce-player"></button> 
         `;
-    player.insertAdjacentHTML('beforeend', buttons);
+        player.insertAdjacentHTML('beforeend', buttons);
 
-    document.querySelector('.js-btn-exit').addEventListener('click', (e) => {
-        animateButton(e);
-        simulateKey(document.querySelector('#player'), '27');
-    });
+        document.querySelector('.js-btn-exit').addEventListener('click', (e) => {
+            animateButton(e);
+            simulateKey(document.querySelector('#player'), '27');
+        });
 
-    document.querySelector('.js-btn-prev').addEventListener('click', (e) => {
-        animateButton(e);
-        simulateKey(document.querySelector('#player'), 37, 'up');
-    });
+        document.querySelector('.js-btn-prev').addEventListener('click', (e) => {
+            animateButton(e);
+            simulateKey(document.querySelector('#player'), 37, 'up');
+        });
 
-    document.querySelector('.js-btn-next').addEventListener('click', (e) => {
-        animateButton(e);
-        simulateKey(document.querySelector('#player'), 39, 'up');
-    });
+        document.querySelector('.js-btn-next').addEventListener('click', (e) => {
+            animateButton(e);
+            simulateKey(document.querySelector('#player'), 39, 'up');
+        });
 
-    document.querySelector('.js-btn-reduce-player').addEventListener('click', (e) => {
-        animateButton(e);
-        e.target.classList.toggle('b-button--expand-player');
-        e.target.classList.toggle('b-button--reduce-player');
+        document.querySelector('.js-btn-reduce-player').addEventListener('click', (e) => {
+            animateButton(e);
+            e.target.classList.toggle('b-button--expand-player');
+            e.target.classList.toggle('b-button--reduce-player');
 
-        if (e.target.classList.contains('b-button--expand-player')) {
-            e.target.setAttribute('title', 'Развернуть');
-        } else {
-            e.target.setAttribute('title', 'Мини-проигрыватель');
-        }
-        document.querySelector('body').classList.toggle('reduce-player');
-    });
+            if (e.target.classList.contains('b-button--expand-player')) {
+                e.target.setAttribute('title', 'Развернуть');
+            } else {
+                e.target.setAttribute('title', 'Мини-проигрыватель');
+            }
+            document.querySelector('body').classList.toggle('reduce-player');
+        });
+    }
 
     function animateButton(e) {
         e.preventDefault;
@@ -204,22 +216,15 @@
         }, 700);
     }
 
-
-    /**
-     * Simulate a key event.
-     * @param {Number} keyCode The keyCode of the key to simulate
-     * @param {String} type (optional) The type of event : down, up or press. The default is down
-     * @param {Object} modifiers (optional) An object which contains modifiers keys { ctrlKey: true, altKey: false, ...}
-     */
     function simulateKey(element, keyCode, type, modifiers) {
-        var evtName = (typeof (type) === 'string') ? 'key' + type : 'keydown';
-        var modifier = (typeof (modifiers) === 'object') ? modifier : {};
+        let evtName = (typeof (type) === 'string') ? 'key' + type : 'keydown';
+        let modifier = (typeof (modifiers) === 'object') ? modifier : {};
 
-        var event = document.createEvent('HTMLEvents');
+        let event = document.createEvent('HTMLEvents');
         event.initEvent(evtName, true, false);
         event.keyCode = keyCode;
 
-        for (var i in modifiers) {
+        for (let i in modifiers) {
             event[i] = modifiers[i];
         }
 
