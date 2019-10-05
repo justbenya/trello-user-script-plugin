@@ -235,4 +235,94 @@
     oversizedCardSize();
     alwaysExpandedTextInCards();
     bindOverlayEvents();
+
+//    ----
+
+    function highlight(md) {
+        if (!md.hasChildNodes() || md.getAttribute('card-highlighted') === 'true') {
+            return;
+        }
+        md.setAttribute('card-highlighted', 'true');
+        md.querySelectorAll('pre > code').forEach(function (code, id) {
+            code.parentNode.className += ' hljs';
+            hljs.highlightBlock(code);
+        });
+    }
+
+    function withDomReady(fn) {
+        // If we're early to the party
+        document.addEventListener('DOMContentLoaded', fn);
+        // If late; I mean on time.
+        if (
+            document.readyState === 'interactive' ||
+            document.readyState === 'complete'
+        ) {
+            fn();
+        }
+    }
+
+    withDomReady(function () {
+        document.head.appendChild(addFileScript('//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js'));
+        document.head.appendChild(addFileStyle('//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github.min.css'));
+        document.head.appendChild(addGlobalStyle(`
+            .window-wrapper.js-tab-parent .hljs {
+                background: #f8f8f8;
+                overflow-x: initial;
+            }`));
+
+        function addFileScript(src) {
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = src;
+            return script;
+        }
+
+        function addFileStyle(src) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = src;
+            return link;
+        }
+
+        function addGlobalStyle(css) {
+            let style = document.createElement('style');
+            style.innerHTML = css;
+            return style;
+        }
+
+        var observer = new MutationObserver(function (mutations) {
+            for (let mutation of mutations) {
+                if (mutation.type === 'childList') {
+                    if (mutation.target.className === 'js-fill-card-detail-desc') {
+                        // card description
+                        let md = mutation.target.querySelector('.current');
+                        if (md) {
+                            highlight(md);
+                        }
+                    }
+                    if (mutation.target.classList.contains('mod-card-back')) {
+                        // card comment
+                        let md = mutation.target.querySelector('.current-comment');
+                        if (md) {
+                            highlight(md);
+                        }
+                    }
+                    if (mutation.target.classList.contains('current')) {
+                        highlight(mutation.target);
+                    }
+                    if (mutation.target.classList.contains('mod-comment-type')) {
+                        let md = mutation.target.querySelector('.current-comment');
+                        if (md) {
+                            highlight(md);
+                        }
+                    }
+                }
+            }
+        });
+
+        observer.observe(document.querySelector('.window-wrapper.js-tab-parent'), {
+            childList: true,
+            subtree: true
+        });
+    });
 })();
