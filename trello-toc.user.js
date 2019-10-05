@@ -238,30 +238,7 @@
 
 //    ----
 
-    function highlight(md) {
-        if (!md.hasChildNodes() || md.getAttribute('card-highlighted') === 'true') {
-            return;
-        }
-        md.setAttribute('card-highlighted', 'true');
-        md.querySelectorAll('pre > code').forEach(function (code, id) {
-            code.parentNode.className += ' hljs';
-            hljs.highlightBlock(code);
-        });
-    }
-
-    function withDomReady(fn) {
-        // If we're early to the party
-        document.addEventListener('DOMContentLoaded', fn);
-        // If late; I mean on time.
-        if (
-            document.readyState === 'interactive' ||
-            document.readyState === 'complete'
-        ) {
-            fn();
-        }
-    }
-
-    withDomReady(function () {
+    withDomReady(() => {
         document.head.appendChild(addFileScript('//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js'));
         document.head.appendChild(addFileStyle('//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github.min.css'));
         document.head.appendChild(addGlobalStyle(`
@@ -290,7 +267,7 @@
             return style;
         }
 
-        var observer = new MutationObserver(function (mutations) {
+        const observer = new MutationObserver(function (mutations) {
             for (let mutation of mutations) {
                 if (mutation.type === 'childList') {
                     if (mutation.target.className === 'js-fill-card-detail-desc') {
@@ -309,6 +286,7 @@
                     }
                     if (mutation.target.classList.contains('current')) {
                         highlight(mutation.target);
+                        alwaysExpandedTextInCards();
                     }
                     if (mutation.target.classList.contains('mod-comment-type')) {
                         let md = mutation.target.querySelector('.current-comment');
@@ -325,4 +303,27 @@
             subtree: true
         });
     });
+
+    function withDomReady(fn) {
+        // If we're early to the party
+        document.addEventListener('DOMContentLoaded', fn);
+        // If late; I mean on time.
+        if (
+            document.readyState === 'interactive' ||
+            document.readyState === 'complete'
+        ) {
+            fn();
+        }
+    }
+
+    function highlight(md) {
+        if (!md.hasChildNodes() || md.getAttribute('card-highlighted') === 'true') {
+            return;
+        }
+        md.setAttribute('card-highlighted', 'true');
+        md.querySelectorAll('pre > code').forEach(function (code, id) {
+            code.parentNode.className += ' hljs';
+            hljs.highlightBlock(code);
+        });
+    }
 })();
